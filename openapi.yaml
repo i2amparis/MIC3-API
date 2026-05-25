@@ -34,7 +34,21 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/CreateInputFileRequest"
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: >
+                    IAMC long-format CSV file to apply to the model. The file
+                    must include the columns model, scenario, region, variable,
+                    unit, year, and value.
+                description:
+                  type: string
+                  description: Human-readable description of the input file.
+                  example: Baseline scenario inputs for 2030.
             encoding:
               file:
                 contentType: text/csv
@@ -119,23 +133,6 @@ paths:
 
 components:
   schemas:
-    CreateInputFileRequest:
-      type: object
-      required:
-        - file
-      properties:
-        file:
-          type: string
-          format: binary
-          description: >
-            IAMC long-format CSV file to apply to the model. The file must
-            include the columns model, scenario, region, variable, unit, year,
-            and value.
-        description:
-          type: string
-          description: Human-readable description of the input file.
-          example: Baseline scenario inputs for 2030.
-
     InputFile:
       type: object
       required:
