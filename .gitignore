@@ -1,0 +1,31 @@
+# VS Code
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Microsoft Office temporary and lock files
+~$*.doc*
+~$*.xls*
+~$*.ppt*
+*.tmp
+*.temp
+*.TMP
+*.wbk
+*.asd
+.~lock.*
+
+# Editor and OS temporary files
+*~
+*.bak
+*.swp
+*.swo
+.#*
+\#*#
