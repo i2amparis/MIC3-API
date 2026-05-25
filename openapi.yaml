@@ -15,6 +15,8 @@ servers:
 tags:
   - name: Inputs
     description: Operations for creating and retrieving model input files.
+  - name: Config
+    description: Operations for retrieving and updating model configuration files.
 
 paths:
   /inputs:
@@ -129,6 +131,65 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /config:
+    get:
+      tags:
+        - Config
+      operationId: getConfigurationFiles
+      summary: Retrieve model configuration files
+      description: >
+        Returns the simulation options and other configuration files available
+        to the model adapter. Implementations may include download URLs or
+        storage locations if the caller is allowed to retrieve the underlying
+        files.
+      responses:
+        "200":
+          description: Configuration files returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigFileList"
+    post:
+      tags:
+        - Config
+      operationId: updateConfigurationFiles
+      summary: Update model configuration files
+      description: >
+        Updates one or more model configuration files, such as simulation
+        options, solver settings, or other model-specific configuration files.
+        The model adapter is responsible for validating and applying the
+        uploaded files to the native model structure.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - files
+              properties:
+                files:
+                  type: array
+                  description: Configuration files to update.
+                  items:
+                    type: string
+                    format: binary
+                description:
+                  type: string
+                  description: Human-readable description of the configuration update.
+                  example: Updated simulation options for a baseline run.
+      responses:
+        "200":
+          description: Configuration files updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigFileList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
 components:
   schemas:
     InputFile:
@@ -196,6 +257,63 @@ components:
           minimum: 0
           description: Number of input files returned.
           example: 2
+
+    ConfigFile:
+      type: object
+      required:
+        - config_id
+        - filename
+        - format
+        - updated_at
+      properties:
+        config_id:
+          type: string
+          description: Unique identifier of the configuration file.
+          example: config_simulation_options
+        filename:
+          type: string
+          description: Name of the configuration file.
+          example: simulation_options.toml
+        description:
+          type: string
+          description: Human-readable description of the configuration file.
+          example: Simulation options used by the model adapter.
+        format:
+          type: string
+          description: Format of the configuration file.
+          example: toml
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the configuration file was last updated.
+          example: "2026-05-25T15:30:00Z"
+        download_url:
+          type: string
+          format: uri
+          description: Optional URL for downloading the configuration file.
+          example: https://example.org/api/v1/config/config_simulation_options/download
+        warnings:
+          type: array
+          description: Non-blocking issues found while updating the configuration file.
+          items:
+            type: string
+          example: []
+
+    ConfigFileList:
+      type: object
+      required:
+        - items
+        - count
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConfigFile"
+        count:
+          type: integer
+          minimum: 0
+          description: Number of configuration files returned.
+          example: 1
 
     Error:
       type: object
