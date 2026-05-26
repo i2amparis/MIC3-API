@@ -37,9 +37,7 @@ parameter, value
 end_year, 2050
 ```
 
-Each model adapter maps these generic configuration parameters to the model's
-native configuration files. If a model does not support changing a requested
-parameter, the adapter reports it in the response as unsupported.
+Each model adapter maps these generic configuration and input parameters to the model's native files.
 
 ## Latest files
 
@@ -52,7 +50,7 @@ GET /outputs?limit=1&sort=-created_at
 
 ## Interactive documentation (Swagger UI)
 
-Interactive documentation using Swagger UI is available at [https://api.transience.eu](https://api.transience.eu). The documentation page visualises directly the `openapi.yaml` and is kept up to date with its changes.
+Interactive documentation using Swagger UI is available at [https://api.transience.eu](https://api.transience.eu). The documentation page visualises directly the [`openapi.yaml`](openapi.yaml) and is kept up to date with its changes.
 
 For local preview, serve the repository root and open `/docs/`:
 
