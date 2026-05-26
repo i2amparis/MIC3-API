@@ -17,6 +17,8 @@ servers:
     description: Local development server
 
 tags:
+  - name: Model
+    description: Operations for retrieving model and adapter information.
   - name: Inputs
     description: Operations for creating and retrieving model input files.
   - name: Outputs
@@ -27,6 +29,24 @@ tags:
     description: Operations for starting and monitoring model simulations.
 
 paths:
+  /model-info:
+    get:
+      tags:
+        - Model
+      operationId: getModelInfo
+      summary: Get model and adapter information
+      description: >
+        Returns basic information about the model, the model adapter, the API
+        version implemented by the adapter, and the operations supported by the
+        model.
+      responses:
+        "200":
+          description: Model information returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelInfo"
+
   /inputs:
     post:
       tags:
@@ -453,6 +473,54 @@ paths:
 
 components:
   schemas:
+    ModelInfo:
+      type: object
+      required:
+        - model_id
+        - model_name
+        - api_version
+        - supported_operations
+      properties:
+        model_id:
+          type: string
+          description: Stable identifier of the model.
+          example: forecast
+        model_name:
+          type: string
+          description: Human-readable model name.
+          example: FORECAST
+        model_version:
+          type: string
+          description: Version of the model exposed by this adapter.
+          example: "2026.1"
+        adapter_version:
+          type: string
+          description: Version of the model adapter implementing this API.
+          example: "0.1.0"
+        api_version:
+          type: string
+          description: Version of the MIC3 API implemented by this adapter.
+          example: "0.1.0"
+        supported_operations:
+          type: array
+          description: API operation groups supported by this model adapter.
+          items:
+            type: string
+            enum:
+              - inputs
+              - outputs
+              - config
+              - simulation
+          example:
+            - inputs
+            - outputs
+            - config
+            - simulation
+        description:
+          type: string
+          description: Optional human-readable description of the model.
+          example: Technology Diffusion Model in Energy-Intensive Industries.
+
     InputFile:
       type: object
       required:
