@@ -146,7 +146,8 @@ paths:
         Returns the simulation options and other configuration files available
         to the model adapter. Implementations may include download URLs or
         storage locations if the caller is allowed to retrieve the underlying
-        files.
+        files. The response should also include the generic configuration
+        template used by POST /config, with parameter and value columns.
       responses:
         "200":
           description: Configuration files returned successfully.
@@ -247,7 +248,7 @@ paths:
                         parameter:
                           type: string
                           description: Generic configuration parameter requested in the uploaded CSV file.
-                          example: end_year
+                          example: start_year
                         value:
                           description: Requested value that could not be applied.
                           oneOf:
@@ -259,7 +260,7 @@ paths:
                         reason:
                           type: string
                           description: Explanation of why the parameter cannot be changed for this model.
-                          example: This model does not allow users to change the simulation end year.
+                          example: This model does not allow users to change the simulation start year.
                   warnings:
                     type: array
                     description: Non-blocking issues found while updating configuration.
