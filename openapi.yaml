@@ -21,6 +21,8 @@ tags:
     description: Operations for creating and retrieving model input files.
   - name: Config
     description: Operations for retrieving and updating model configuration files.
+  - name: Simulation
+    description: Operations for starting and monitoring model simulations.
 
 paths:
   /inputs:
@@ -271,6 +273,116 @@ paths:
         "422":
           $ref: "#/components/responses/ValidationError"
 
+  /simulate:
+    post:
+      tags:
+        - Simulation
+      operationId: startSimulation
+      summary: Start a model simulation
+      description: >
+        Starts a model simulation using the current input file and current
+        configuration files available to the model adapter.
+      responses:
+        "202":
+          description: Simulation start request accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+        "409":
+          description: A simulation is already running.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /simulate/status:
+    get:
+      tags:
+        - Simulation
+      operationId: getSimulationStatus
+      summary: Get simulation status
+      description: >
+        Returns compact, machine-readable information about the current or most
+        recent simulation, such as whether the model is idle, running,
+        completed, failed, or cancelled.
+      responses:
+        "200":
+          description: Simulation status returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+
+  /simulate/logs:
+    get:
+      tags:
+        - Simulation
+      operationId: getSimulationLogs
+      summary: Stream model simulation logs
+      description: >
+        Streams or returns logs from the current or most recent model
+        simulation. Logs are diagnostic output and should not be used as a
+        substitute for GET /simulate/status.
+      parameters:
+        - name: stream
+          in: query
+          required: false
+          description: Whether to keep the connection open and stream new log lines.
+          schema:
+            type: boolean
+            default: true
+        - name: tail
+          in: query
+          required: false
+          description: Number of recent log lines to return before streaming.
+          schema:
+            type: integer
+            minimum: 1
+            default: 100
+      responses:
+        "200":
+          description: Simulation logs returned successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Newline-delimited simulation log output.
+                example: |
+                  2026-05-25T15:30:00Z Starting simulation.
+                  2026-05-25T15:31:00Z Simulation step completed.
+
+  /simulate/cancel:
+    post:
+      tags:
+        - Simulation
+      operationId: cancelSimulation
+      summary: Cancel the current simulation
+      description: >
+        Cancels the currently running simulation. If no simulation is running,
+        the response indicates that no cancellation was performed.
+      responses:
+        "200":
+          description: Cancellation request processed.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - cancelled
+                  - message
+                properties:
+                  cancelled:
+                    type: boolean
+                    description: Whether a running simulation was cancelled.
+                    example: false
+                  message:
+                    type: string
+                    description: Human-readable result of the cancellation request.
+                    example: No simulation is currently running.
+                  simulation:
+                    $ref: "#/components/schemas/SimulationStatus"
+
 components:
   schemas:
     InputFile:
@@ -395,6 +507,42 @@ components:
           minimum: 0
           description: Number of configuration files returned.
           example: 1
+
+    SimulationStatus:
+      type: object
+      required:
+        - state
+      properties:
+        simulation_id:
+          type: string
+          description: Unique identifier of the simulation.
+          example: simulation_2026_001
+        state:
+          $ref: "#/components/schemas/SimulationState"
+        started_at:
+          type: string
+          format: date-time
+          description: Date and time when the simulation started.
+          example: "2026-05-25T15:30:00Z"
+        finished_at:
+          type: string
+          format: date-time
+          description: Date and time when the simulation finished.
+          example: "2026-05-25T16:30:00Z"
+        message:
+          type: string
+          description: Human-readable status message.
+          example: Simulation is running.
+
+    SimulationState:
+      type: string
+      description: Current state of the model simulation.
+      enum:
+        - idle
+        - running
+        - completed
+        - failed
+        - cancelled
 
     Error:
       type: object
