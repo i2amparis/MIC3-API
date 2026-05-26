@@ -2,6 +2,9 @@ openapi: 3.1.0
 info:
   title: MIC3 Model Linking API
   version: 0.1.0
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
   description: |
     Common API contract for MIC3 model adapters. 
     
@@ -13,10 +16,10 @@ info:
     url: https://www.transience.eu
 
 servers:
-  - url: https://example.org/api/v1
-    description: Example production server
-  - url: http://localhost:8000/api/v1
-    description: Local development server
+  - url: /api/v1
+    description: API root path
+
+security: []
 
 tags:
   - name: Model
@@ -48,6 +51,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ModelInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /inputs:
     post:
@@ -134,6 +139,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InputFileList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /inputs/{input_id}:
     get:
@@ -201,6 +208,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OutputFileList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /outputs/{output_id}:
     get:
@@ -247,6 +256,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ConfigFileList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
     post:
       tags:
         - Config
@@ -313,13 +324,9 @@ paths:
                           description: Generic configuration parameter requested in the uploaded CSV file.
                           example: end_year
                         value:
+                          type: string
                           description: Value applied to the native model configuration.
-                          oneOf:
-                            - type: string
-                            - type: number
-                            - type: integer
-                            - type: boolean
-                          example: 2050
+                          example: "2050"
                         native_parameter:
                           type: string
                           description: Native model configuration parameter that was updated.
@@ -342,13 +349,9 @@ paths:
                           description: Generic configuration parameter requested in the uploaded CSV file.
                           example: start_year
                         value:
+                          type: string
                           description: Requested value that could not be applied.
-                          oneOf:
-                            - type: string
-                            - type: number
-                            - type: integer
-                            - type: boolean
-                          example: 2050
+                          example: "2050"
                         reason:
                           type: string
                           description: Explanation of why the parameter cannot be changed for this model.
@@ -404,6 +407,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SimulationStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /simulate/logs:
     get:
@@ -441,6 +446,8 @@ paths:
                 example: |
                   2026-05-25T15:30:00Z Starting simulation.
                   2026-05-25T15:31:00Z Simulation step completed.
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /simulate/cancel:
     post:
@@ -472,6 +479,8 @@ paths:
                     example: No simulation is currently running.
                   simulation:
                     $ref: "#/components/schemas/SimulationStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
 components:
   schemas:
