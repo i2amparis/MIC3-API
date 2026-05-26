@@ -4,7 +4,12 @@ info:
   version: 0.1.0
   description: >
     Common API contract for MIC3 model adapters. 
-    Developed in the context of the Horizon Europe project TRANSIENCE project.
+    Developed in the context of the Horizon Europe project TRANSIENCE project (grant agreement No 101137606).
+    Views and opinions expressed are those of the author(s) only and do not necessarily reflect those of the European Union or the European Health and Digital Executive Agency (HaDEA).
+  contact:
+    name: TRANSIENCE
+    url: https://www.transience.eu
+    email: contact@transience.eu
 
 servers:
   - url: https://example.org/api/v1
