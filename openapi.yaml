@@ -2,10 +2,12 @@ openapi: 3.1.0
 info:
   title: MIC3 Model Linking API
   version: 0.1.0
-  description: >
+  description: |
     Common API contract for MIC3 model adapters. 
-    Developed in the context of the EU-funded Horizon Europe project TRANSIENCE 
-    (grant agreement No [101137606](https://doi.org/10.3030/101137606)).    
+    
+    Developed in the context of the
+    TRANSIENCE project and funded by the European Union's Horizon Europe programme
+    under grant agreement No 101137606.
   contact:
     name: TRANSIENCE
     url: https://www.transience.eu
